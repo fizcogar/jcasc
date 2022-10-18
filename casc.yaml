@@ -1,0 +1,33 @@
+jenkins:
+  # Usuario de Jenkins, local quiere decir usuario/contraseña
+  # Aquí se podría configurar LDAP o, supongo, AD
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: ${JENKINS_ADMIN_ID} 
+         password: ${JENKINS_ADMIN_PASSWORD}
+  # Estrategia de autorización.
+  # globalMatrix es para el plugin jenkins.authorizationStrategy.globalMatrix.permissions
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "USER:Overall/Administer:admin"
+        - "GROUP:Overall/Read:authenticated"
+  # Para controlar el acceso de los agentes
+  # Deprecated! Ahora está siempre activado
+  #https://www.jenkins.io/doc/book/security/controller-isolation/jep-235/#api-compatibility
+  #remotingSecurity:
+  #  enabled: true        
+  
+# El usuario que ejecuta builds es el que ha lanzado la build, en lugar del usuario 'system'
+security:
+  queueItemAuthenticator:
+    authenticators:
+    - global:
+        strategy: triggeringUsersAuthorizationStrategy
+# Especificando la URL de Jenkins
+# No sé si hace falta, no se queja ...
+unclassified:
+  location:
+    url: http://127.0.0.1:8080/
